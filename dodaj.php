@@ -66,6 +66,7 @@
       <hr>
         
         <div id="tura_post">
+        <form method="post" action="">
             <input type="text" name="ruta_ture" placeholder="Unesite rutu">
             <br>
             <br>
@@ -79,33 +80,126 @@
 <?php require "selectvozaci.php"?>
 <br><br>
 <?php require "selectkamioni.php"?>
+<br>
+<input type="submit" name="unosture" value="Dodaj novu turu"/>
 
-            
+           </form>
+           <?php
+if (isset($_POST["unosture"])){
+//Prikupljanje podataka sa forme
+
+$ruta_ture = $_POST['ruta_ture'];
+$napomena_ture = $_POST['napomena_ture'];
+$datum_ture = $_POST['datum_ture'];
+$vozac = $_POST['vozac'];
+
+
+include "konekcija.php";
+if (!empty($ruta_ture) && !empty($datum_ture)){
+
+  
+//Operacije nad bazom
+
+$sql="INSERT INTO tura (ruta,napomena,datum,idvozac,idkamion) VALUES ('".$ruta_ture."', '".$napomena_ture."','".$datum_ture."','".$vozac."','".$kamion."')";
+if ($mysqli->query($sql)){
+echo "<p>Tura uspesno dodata</p>";
+} else {
+echo "<p>Nastala je greška pri unosu nove ture</p>" . $mysqli->error;
+}
+} else {
+//Ako POST parametri nisu prosleđeni
+echo "Nisu prosleđeni obavezni parametri!";
+
+}
+$mysqli->close();
+}
+?>
         </div>
 
     <div id="vozac_post">
+    <form method="post" action="">
     <input type="text" name="ime_vozac" placeholder="Unesite ime vozaca:">
     <br>
     <input type="text" name="prezime_vozac" placeholder="Unesite prezime vozaca:">
     <br>
     <input type="text" name="jmbg_vozac" placeholder="Unesite JMBG vozaca:">
     <br>
+    <input type="submit" name="unosvozaca" value="Dodaj vozaca"/>
+    </form>
+    <?php
+if (isset($_POST["unosvozaca"])){
+//Prikupljanje podataka sa forme
+
+$ime_vozac = $_POST['ime_vozac'];
+$prezime_vozac = $_POST['prezime_vozac'];
+$jmbg_vozac = $_POST['jmbg_vozac'];
+include "konekcija.php";
+if (!empty($ime_vozac) && !empty($prezime_vozac) && !empty($jmbg_vozac)){
+
+
+//Operacije nad bazom
+
+$sql="INSERT INTO vozac (ime,prezime,jmbg) VALUES ('".$ime_vozac."', '".$prezime_vozac."','".$jmbg_vozac."')";
+if ($mysqli->query($sql)){
+echo "<p>Vozac uspesno dodat</p>";
+} else {
+echo "<p>Nastala je greška pri ubacivanju vozaca</p>" . $mysqli->error;
+}
+} else {
+//Ako POST parametri nisu prosleđeni
+echo "Nisu prosleđeni parametri!";
+
+}
+$mysqli->close();
+}
+?>
 
     </div>
     
+    
     <div id="kamion_post">
+    <form method="post" action="">
     <input type="text" name="model_kamion" placeholder="Unesite model kamiona:">
-    <br>
+    <br><br>
     <input type="text" name="reg_br_kamion" placeholder="Unesite registarski broj kamiona:">
-   
-    <br>
+    <br><br>
+    <input type="submit" name="unoskamiona" value="Dodaj kamion"/>
+    <br><br>
+  </form>
+  <?php
+if (isset($_POST["unoskamiona"])){
+//Prikupljanje podataka sa forme
+
+$model_kamion = $_POST['model_kamion'];
+$reg_br_kamion = $_POST['reg_br_kamion'];
+
+include "konekcija.php";
+if (!empty($model_kamion) && !empty($reg_br_kamion)){
+
+
+//Operacije nad bazom
+
+$sql="INSERT INTO kamion (model,reg_br) VALUES ('".$model_kamion."', '".$reg_br_kamion."')";
+if ($mysqli->query($sql)){
+echo "<p>Kamion je uspesno dodat</p>";
+} else {
+echo "<p>Nastala je greška pri ubacivanju kamiona</p>" . $mysqli->error;
+}
+} else {
+//Ako POST parametri nisu prosleđeni
+echo "Nisu prosleđeni parametri!";
+
+}
+$mysqli->close();
+}
+?>
 
     </div>
+
+
     <div id="greska">
     </div>
-    <div id="submit">
-            <button type="button">Posalji zahtev</button>
-        </div>
+    
      
     </div>
     <div class="col-sm-2 sidenav">

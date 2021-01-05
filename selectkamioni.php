@@ -9,7 +9,7 @@ $rezultat = $mysqli->query($sql);
 <?php
 while($red = $rezultat->fetch_object()){
 ?>
-<option value="<?php echo $red->idkamion;?>"><?php echo $red->reg_br;?></option>
+<option name="option_kamion" value="<?php echo $red->idkamion;?>"><?php echo $red->reg_br;?></option>
 <?php
 }
 ?>

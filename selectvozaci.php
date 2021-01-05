@@ -9,8 +9,10 @@ $rezultat = $mysqli->query($sql);
 <?php
 while($red = $rezultat->fetch_object()){
 ?>
-<option value="<?php echo $red->idvozac;?>"><?php echo $red->imeprezime;?></option>
+<option name="option_vozac" value="<?php echo $red->idvozac;?>"><?php echo $red->imeprezime;?></option>
+
 <?php
+
 }
 ?>
 </select>

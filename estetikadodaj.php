@@ -22,7 +22,7 @@
             // u slučaju da odaberemo get, sakrićemo sve prethodno prikazane div-ove
                 skloniBlokove();
                 //obrisaćemo unutrašnji HTML get_odgovor bloka 
-                document.getElementById("tura_post").innerHTML="";
+               
                 // i prikazati ga da bude vidljiv, promenom atributa display sa none na block
                 document.getElementById(nizBlokova[0]).style.display="block";
                 break;
@@ -30,9 +30,9 @@
             // u slučaju da odaberemo post, sakrićemo sve prethodno prikazane div-ove
                 skloniBlokove();
                 //proverićemo da li je odabrana tabela novosti ili kategorije
-                document.getElementById("vozac_post").innerHTML="";
+               
                 // i prikazati ga da bude vidljiv, promenom atributa display sa none na block
-                document.getElementById(nizBlokova[0]).style.display="block";
+                document.getElementById(nizBlokova[1]).style.display="block";
                 break;
                 
                 
@@ -40,9 +40,9 @@
             /// u slučaju da odaberemo post, sakrićemo sve prethodno prikazane div-ove
             skloniBlokove();
                 //proverićemo da li je odabrana tabela novosti ili kategorije
-                document.getElementById("kamion_post").innerHTML="";
+              
                 // i prikazati ga da bude vidljiv, promenom atributa display sa none na block
-                document.getElementById(nizBlokova[0]).style.display="block";
+                document.getElementById(nizBlokova[2]).style.display="block";
                 break;
             default:
                 break;
