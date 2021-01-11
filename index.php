@@ -7,7 +7,22 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="obrisi.js"></script>
+  <script type="text/javascript" src="jquery-1.10.2.js"></script>
+<script type="text/javascript">
+$(document).ready(function () {
+$(".obrisi_link").click(function(){
+var vrednost = ($(this).attr("idtura")).substring(7);
+var red_tabele = $(this);
+$.get("obrisi.php", { idtura: vrednost },
+   function(data){
+   if (data == 1){
+   $(red_tabele).parent().parent().remove();
+   }   
+   });
+});
+});
+</script>
+
   <style>
     /* Remove the navbar's default margin-bottom and rounded borders */ 
     .navbar {
@@ -55,52 +70,137 @@
       <h1>Dobrodosli na sajt autoprevoznicke radnje</h1>
       <p>Sajt je osmisljen kako bi olaksao vlasnicima evidenciju o turama i olaksao manipulisanje podacima o njima. Takodje moguce je voditi i evidenciju o vozacima i kamionima koji ucestvuju u istim.</p>
       <hr>
-      <div id="tabela_tura" name="tabela_tura">
       <h3>Prikaz svih tura</h3>
-      <?php
-include "konekcija.php";
+      <div name="tabela_tura" id="tabela_tura">
 
-$sql="SELECT idtura,ruta,napomena, datum, CONCAT(ime,' ',prezime) as imeprezime, reg_br FROM tura,vozac,kamion
-where tura.idvozac=vozac.idvozac and tura.idkamion=kamion.idkamion
-order by datum desc";
-if (!$q=$mysqli->query($sql)){
-die ("Nastala je greška pri izvođenju upita<br/>" . $mysqli->error);
+      Sortiraj po: <input type="radio" name="tabela_tura" id="radio_id" value="idi" checked>
+           <label for="radio_id">ID-u</label>
+            <input type="radio" name="tabela_tura" id="radio_datumASC" value="datumASC">
+            <label for="radio_datumASC">Datumu rastuce</label>
+            <input type="radio" name="tabela_tura" id="radio_datumDESC" value="datumDESC">
+            <label for="radio_datumDESC">Datumu opadajuce</label>
+            <input type="radio" name="tabela_tura" id="radio_vozac" value="vozac">
+            <label for="radio_vozac">Vozacima</label>
+            <input type="radio" name="tabela_tura" id="radio_kamion" value="kamion">
+            <label for="radio_kamion">Kamionima</label>
+            </div>
+            <hr>
+
+<div id="sortIndeks">
+<?php require "turePrikaz/turepoID.php"?>
+</div>
+
+<div id="sortDatumASC">
+<?php require "turePrikaz/turepodatumuASC.php"?>
+</div>
+
+<div id="sortDatumDESC">
+<?php require "turePrikaz/turepodatumuDESC.php"?>
+</div>
+
+<div id="sortVozac">
+<?php require "turePrikaz/turepoVozacu.php"?>
+</div>
+
+<div id="sortKamion">
+<?php require "turePrikaz/turepoKamionu.php"?>
+</div>
+
+
+  
+
+  
+
+</div>
+
+</div>
+
+<div id="dugme">
+<button onclick="location.href = 'dodaj.php';" id="dodajT" class="float-left submit-button" >Dodaj novu turu</button>
+</div>
+<br>
+    <h3>Obrisi turu:</h3>
+<form method="delete" action="">
+    <div id="obrisi_turu">
+    <input type="text" name="idtureBrisanje" placeholder="Unesi id ture">
+    <input type="submit" name="obrisiTuru" value="Obrisi turu">
+</form>
+<?php
+include "konekcija.php";
+if (isset ($_GET['obrisiTuru']) && isset ($_GET['idtureBrisanje'])){
+  if(!empty($_GET['idtureBrisanje'])){
+$idtureBrisanje = (int)$_GET['idtureBrisanje'];
+
+  $upit = "DELETE FROM tura WHERE idtura = ".$idtureBrisanje;
+if (!$q=$mysqli->query($upit)){
+echo "Nastala je greska pri izvodenju upita<br/>" . mysql_query();
+die();
+} else {
+echo "<p>Brisanje ture je uspešno!</p>";
 }
-if ($q->num_rows==0){
-echo "Nema tura";
-} 
-else {
-//prelazi se u HTML ispis
-?>
-<table id="ta" width="1000" height="200" border="4" cellpadding="10" cellspacing="5" style="text-align:center ">
-<tr>
-<td><b>Ruta</b></td>
-<td><b>Napomena</b></td>
-<td><b>Datum</b></td>
-<td><b>Vozac</b></td>
-<td><b>Kamion</b></td>
-</tr>
-<?php
-while ($red=$q->fetch_object()){
-?>
-<tr>
-<td><?php echo $red->ruta; ?></td> 
-<td><?php echo $red->napomena; ?></td>
-<td><?php echo $red->datum; ?></td>
-<td><?php echo $red->imeprezime; ?></td> 
-<td><?php echo $red->reg_br; ?></td>
-<?php
-}
-?>
-</table>
-<?php
+  }else{
+    echo "<p>Niste prosledili parametre!</p>";
+  }
 }
 $mysqli->close();
 ?>
-    
-  </div>
+   
+    </div>
+<div id="izmeniTuru">
+<h3>Izmeni turu:</h3>
+    <form method="post" action="">
+
+Unesite ID ture: <input type="text" name="idt" placholder="Unesite id ture">
+
+Unesite rutu ture:<input type="text" name="rutat" placholder="Unesite rutu ture">
+<br><br>
+Napomena: <input type="text" name="napomenat" placholder="Napomena">
+
+Datum ture:<input type="text" name="datumt" placholder="Primer: 2020-12-31">
+<br><br>
+Unesite ID vozaca:<input type="text" name="idv" placholder="Unesite id vozaca">
+
+Unesite ID kamiona:<input type="text" name="idk" placholder="Unesite id kamiona">
+<br><br>
+<input type="submit" name="izmenature" value="Izvrsite izmenu">
+<br><br>
+</form>
+
+<?php
+include "konekcija.php";
+if (isset ($_POST['izmenature'])){
+$idt = (int)$_POST['idt'];
+$rutat = $_POST['rutat'];
+$napomenat = $_POST['napomenat'];
+$datumt = $_POST['datumt'];
+$idv = (int)$_POST['idv'];
+$idk = (int)$_POST['idk'];
+
+if(!empty($_POST['idt'])&&!empty($_POST['rutat'])&&!empty($_POST['datumt'])&&!empty($_POST['idk'])&&!empty($_POST['idk'])){
+
+
+$upit="UPDATE tura SET idtura='". $idt ."', ruta='" . $rutat . "', napomena='" . $napomenat . "', datum='" . $datumt . "', idvozac='" . $idv . "', idkamion='" . $idk . "' WHERE idtura=". $idt;
+if ($mysqli->query($upit)){
+if ($mysqli->affected_rows > 0 ){
+echo "<p>Tura je uspešno izmenjena.</p>";
+} else {
+echo "<p>Tura nije izmenjena.</p>";
+}
+} else {
+echo "<p>Nastala je greška pri izmeni ture</p>" . mysql_error();
+}
+
+}
+else{
+  echo "<p>Niste uneli sve parametre</p>";
+}
+}
+$mysqli->close();
+?>
+
 </div>
-</div>
+
+
 
 <footer class="container-fluid text-center">
   <p>Autoprevoznicka radnja</p>
@@ -110,6 +210,7 @@ $mysqli->close();
 </footer>
 
 </body>
+<?php require "sortIndexture.php"?>
 </html>
 
 

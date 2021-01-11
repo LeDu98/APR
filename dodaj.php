@@ -21,7 +21,7 @@
     .sidenav {
       padding-top: 20px;
       background-color: #f1f1f1;
-      height: 100%;
+      height: 180%;
     }
     
     /* Set black background color, white text and some padding */
@@ -47,15 +47,53 @@
 <div class="container-fluid text-center">    
   <div class="row content">
     <div class="col-sm-2 sidenav">
+    <div id="tabela_vozaca" name="tabela_vozaca">
+      <h3>Prikaz svih vozaca</h3>
+      <?php
+include "konekcija.php";
+
+$sql="SELECT idvozac,CONCAT(ime,' ',prezime) as imeprezime FROM vozac";
+if (!$q=$mysqli->query($sql)){
+die ("Nastala je greška pri izvođenju upita<br/>" . $mysqli->error);
+}
+if ($q->num_rows==0){
+echo "Nema vozaca";
+} 
+else {
+//prelazi se u HTML ispis
+?>
+<table id="taVozac" width="190" height="350" border="4" cellpadding="10" cellspacing="5" style="text-align:center ">
+<tr>
+<td><b>ID</b></td>
+<td><b>Ime i prezime</b></td>
+</tr>
+<?php
+while ($red=$q->fetch_object()){
+?>
+<tr>
+<td><?php echo $red->idvozac; ?></td> 
+<td><?php echo $red->imeprezime; ?></td>
+
+<?php
+}
+?>
+</table>
+<?php
+}
+$mysqli->close();
+?>
     
+  </div>
+
+
     </div>
     <div class="col-sm-8 text-left"> 
       <h2>Dodaj novi kamion, vozaca ili tura u bazu</h2>
      <hr>
 
-     <form action="">
+     
   <div name="odabir_tabele" id="odabir_tabele">
-            <input type="radio" name="odabir_tabele" id="radio_tura" value="tura">
+            <input type="radio" name="odabir_tabele" id="radio_tura" value="tura" checked>
             <label for="radio_tura">Tura</label>
             <input type="radio" name="odabir_tabele" id="radio_vozac" value="vozac">
             <label for="radio_vozac">Vozac</label>
@@ -73,29 +111,30 @@
             <textarea name="napomena_ture" id="napomena_ture" cols="30" rows="5" placeholder="Napomena"></textarea>
             <br>
             <br>
-            <input type="date" name="datum_ture">
+            <input type="text" name="datum_ture" placeholder="Primer: 2020-12-31">
 <br>
+<input type="text" name="vozacid" placeholder="Unesite id vozaca">
 <br>
+<input type="text" name="kamionid" placeholder="Unesite id kamiona">
       
-<?php require "selectvozaci.php"?>
-<br><br>
-<?php require "selectkamioni.php"?>
+
 <br>
 <input type="submit" name="unosture" value="Dodaj novu turu"/>
 
            </form>
            <?php
-if (isset($_POST["unosture"])){
+if (isset($_POST['unosture'])){
 //Prikupljanje podataka sa forme
 
 $ruta_ture = $_POST['ruta_ture'];
 $napomena_ture = $_POST['napomena_ture'];
 $datum_ture = $_POST['datum_ture'];
-$vozac = $_POST['vozac'];
+$vozac = (int)$_POST['vozacid'];
+$kamion=(int)$_POST['kamionid'];
 
 
 include "konekcija.php";
-if (!empty($ruta_ture) && !empty($datum_ture)){
+if (!empty($ruta_ture) && !empty($datum_ture)&& !empty($vozac)&& !empty($kamion)){
 
   
 //Operacije nad bazom
@@ -114,6 +153,7 @@ echo "Nisu prosleđeni obavezni parametri!";
 $mysqli->close();
 }
 ?>
+
         </div>
 
     <div id="vozac_post">
@@ -159,9 +199,9 @@ $mysqli->close();
     
     <div id="kamion_post">
     <form method="post" action="">
-    <input type="text" name="model_kamion" placeholder="Unesite model kamiona:">
+    <input type="text" name="model_kamion" placeholder="Unesite model kamiona">
     <br><br>
-    <input type="text" name="reg_br_kamion" placeholder="Unesite registarski broj kamiona:">
+    <input type="text" name="reg_br_kamion" placeholder="Unesite registraciju">
     <br><br>
     <input type="submit" name="unoskamiona" value="Dodaj kamion"/>
     <br><br>
@@ -195,6 +235,8 @@ $mysqli->close();
 ?>
 
     </div>
+  
+    
 
 
     <div id="greska">
@@ -203,18 +245,51 @@ $mysqli->close();
      
     </div>
     <div class="col-sm-2 sidenav">
-      <div class="well">
-        <p>ADS</p>
-      </div>
-      <div class="well">
-        <p>ADS</p>
-      </div>
+    <div id="tabela_kamiona" name="tabela_kamiona">
+      <h3>Prikaz svih kamiona</h3>
+      <?php
+include "konekcija.php";
+
+$sql="SELECT idkamion,reg_br FROM kamion";
+if (!$q=$mysqli->query($sql)){
+die ("Nastala je greška pri izvođenju upita<br/>" . $mysqli->error);
+}
+if ($q->num_rows==0){
+echo "Nema kamiona";
+} 
+else {
+//prelazi se u HTML ispis
+?>
+<table id="takamion" width="190" height="350" border="4" cellpadding="10" cellspacing="5" style="text-align:center ">
+<tr>
+<td><b>ID</b></td>
+<td><b>Registracija</b></td>
+</tr>
+<?php
+while ($red=$q->fetch_object()){
+?>
+<tr>
+<td><?php echo $red->idkamion; ?></td> 
+<td><?php echo $red->reg_br; ?></td>
+
+<?php
+}
+?>
+</table>
+<?php
+}
+$mysqli->close();
+?>
+ </div>
     </div>
   </div>
 </div>
 
 <footer class="container-fluid text-center">
-  <p>Footer Text</p>
+<p>Autoprevoznicka radnja</p>
+  <p>Telefon: 011/8000-800</p>
+  <p>e-mail: apr@support.com</p>
+  
 </footer>
 
 </body>
